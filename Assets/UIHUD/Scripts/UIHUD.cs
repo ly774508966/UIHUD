@@ -21,9 +21,8 @@ namespace GameKit
         public long MaxHP;
         public string ActorName;
         public GameObject FollowObject;     //跟随的对象
-        public bool IsActiveHP;             
         public bool IsActiveMP;
-        public bool IsActiveActiveName;
+        public bool IsActiveActorName;
         public Color NameColor;
 
         public SkillButtonData SkillButtonData;     //技能cd冷却显示在头顶,非必要,看项目需求
@@ -61,13 +60,13 @@ namespace GameKit
         Camera _uiCamera;             // UI摄像机
         int _targetVisible = -1;      // 目标是否在视野内可见（这里不能用bool，也不能赋值为0或1）
 
-        static string prefabPath = "Assets/Package/UI/UIPrefab/Battle/Hud/UIMonster.prefab"; // 预设路径
+        static string prefabPath = "Hud/UIHud"; // 预设路径
 
         List<GameObject> _scaleList = new List<GameObject>();    //血条上的刻度列表
 
         public static readonly int Param_min = 7;   //血量刻度计算参数
 
-        public static int BaseHPScale = 0;          //由外部设置，我方最大血量单位/Param_min
+        public static int BaseHPScale = 500;          //由外部设置，我方最大血量单位/Param_min
 
         readonly int SCALE_MIN = 4;                 //最小刻度数量
         readonly int SCALE_MAX = 15;                //最大刻度数量
@@ -124,28 +123,22 @@ namespace GameKit
             //设置当前hp进度条
             OnEventHPChange(MyStructUIHUD.CurHP, MyStructUIHUD.MaxHP);
             //设置名字
-            SetName(MyStructUIHUD.ActorName);
+            SetName(MyStructUIHUD);
             //名字颜色
             SetNameColor(MyStructUIHUD.NameColor);
             //hp刻度条
             BaseHPScale = BaseHPScale == 0 ? (int)uihuid.MaxHP / UIHUD.Param_min : BaseHPScale;
             SetHPScale(BaseHPScale, (int)uihuid.MaxHP);
-            //hp条颜色
-            //_hp_fg.spriteName = actor.GetActorGroup() == ActorGroup.Friend ? "bar_hp" : "bar_hp2";
             //类型标识
             SetHeroFeature(uihuid);
 
             _mpBar.gameObject.SetActive(MyStructUIHUD.IsActiveMP);
         }
 
-        public void SetActiveName(bool value)
+        public void SetName(StructUIHUD value)
         {
-            if (_actorName.gameObject.activeSelf != value) _actorName.gameObject.SetActive(value);
-        }
-
-        public void SetName(string value)
-        {
-            _actorName.text = value;
+            _actorName.gameObject.SetActive(value.IsActiveActorName);
+            _actorName.text = value.ActorName;
         }
 
         public void SetNameColor(Color actorColor)
@@ -192,7 +185,7 @@ namespace GameKit
             if (hpMAX == MyStructUIHUD.MaxHP)
             {
                 //上限相同不需要重设
-                return;
+                //return;
             }
 
             for (int i = 0; i < _scaleList.Count; i++)

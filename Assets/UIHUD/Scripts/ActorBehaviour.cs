@@ -23,14 +23,14 @@ public class ActorBehaviour : MonoBehaviour
 	// Use this for initialization
 	void Start () 
     {
-	
+        TestHUD();
 	}
 
     void TestHUD()
     {
         //准备数据
         StructUIHUD data = new StructUIHUD();
-        data.ActorName = "";
+        data.ActorName = "骷髅弓箭手";
         data.FollowObject = gameObject;
         data.CurHP = 10;
         data.MaxHP = 10;
